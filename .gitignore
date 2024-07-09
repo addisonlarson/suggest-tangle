@@ -1,0 +1,16 @@
+*
+!*/
+!*.R
+!*.md
+!*.rmd
+!*.qmd
+!*.RProj
+!README.txt
+!_quarto.yml
+!.gitignore
+!.RProfile
+!renv.lock
+.Rproj.user
+renv/.gitignore
+
+/.quarto/

@@ -1,0 +1,56 @@
+---
+title: "suggest-tangle"
+format: html
+editor: visual
+---
+
+```{r}
+#| echo: false
+
+library(xml2)
+library(rvest)
+library(stringr)
+
+# SET URLS -------------------------------------------------------------------
+
+patterns_link <- "https://tanglepatterns.com/zentangles/list-of-official-tangle-patterns"
+
+strings_links <- c(
+  "https://tanglepatterns.com/category/tanglepatterns-strings",
+  paste0("https://tanglepatterns.com/category/tanglepatterns-strings/page/", 2:9)
+)
+
+# CLEAN UP LINK LISTS --------------------------------------------------------
+
+# Patterns
+patterns_page <- read_html(patterns_link)
+patterns_all_links <- html_attr(html_nodes(patterns_page, "a"), "href")
+
+# Only keep "how-to-draw" links that don't link to specific comments
+draw_links <- sort(unique(patterns_all_links[str_detect(patterns_all_links, "how-to-draw") & !str_detect(patterns_all_links, "#comment")]))
+
+# Strings
+strings_pages <- lapply(strings_links, read_html)
+strings_all_links_list <- lapply(strings_pages, function(p) html_attr(html_nodes(p, "a"), "href"))
+strings_all_links <- sort(unique(unlist(strings_all_links_list)))
+
+# Only keep links with "tanglepatterns-string-"
+strings_links <- strings_all_links[str_detect(strings_all_links, "tanglepatterns-string-")]
+
+# EXTRACT FROM LINK LISTS ----------------------------------------------------
+
+today <- format(Sys.time(), "%Y%m%d")
+set.seed(as.numeric(today))
+
+today_string <- sample(strings_links, size = 1)
+today_patterns <- sample(draw_links, size = 4)
+
+```
+
+## `r today`
+
+- <`r today_string`>
+- <`r today_patterns[1]`>
+- <`r today_patterns[2]`>
+- <`r today_patterns[3]`>
+- <`r today_patterns[4]`>
